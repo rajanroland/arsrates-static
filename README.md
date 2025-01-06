@@ -1,0 +1,1 @@
+# ARS Rates Static Files
