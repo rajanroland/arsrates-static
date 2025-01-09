@@ -1,7 +1,6 @@
 
 <!-- arsrates-static/static/index.html -->
-<!DOCTYPE html>
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -555,16 +554,14 @@
 
     async function loadRates() {
         try {
-            const [currentResponse, comparisonResponse] = await Promise.all([
-                fetch(`${window.APP_CONFIG.API_BASE_URL}/static/data/current_rates.json`),
-                fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`)
-            ]);
+            const currentResponse = await fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/current`);
+            const comparisonResponse = await fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`);
 
             const currentData = await currentResponse.json();
             const comparisonData = await comparisonResponse.json();
 
             document.getElementById('last-updated').innerHTML = 
-                `Last Updated: ${formatDateTime(currentData.last_updated)}`;
+                `Last Updated: ${formatDateTime(currentData.timestamp)}`;
 
             const container = document.getElementById('rates-container');
             ReactDOM.render(
@@ -572,8 +569,7 @@
                     window.RatesContainer, 
                     {
                         currentRates: currentData.rates,
-                        previousRates: comparisonData.previous,
-                        labels: currentData.labels
+                        previousRates: comparisonData.previous
                     }
                 ),
                 container
@@ -715,6 +711,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        console.log('APP_CONFIG:', window.APP_CONFIG);
+        console.log('Config file loaded');    
         loadRates();
         checkAuthState();
         setInterval(checkAuthState, 60000);
