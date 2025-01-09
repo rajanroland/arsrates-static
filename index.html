@@ -14,10 +14,10 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
     
     <!-- Your component -->
-    <script src="static/js/config.js"></script>
-    <script src="static/js/ratesComponent.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src="/static/js/ratesComponent.js"></script>
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="static/images/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/static/images/icon-192x192.png">
     <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
     
     <title>ARS Per USD Rate</title>
@@ -554,8 +554,10 @@
 
     async function loadRates() {
         try {
-            const currentResponse = await fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/current`);
-            const comparisonResponse = await fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`);
+            console.log('APP_CONFIG:', window.APP_CONFIG); // Debug log
+
+            const currentResponse = await fetch('https://api.arsrates.com/api/rates/current');
+            const comparisonResponse = await fetch('https://api.arsrates.com/api/rates/comparison');
 
             const currentData = await currentResponse.json();
             const comparisonData = await comparisonResponse.json();
@@ -579,7 +581,7 @@
         } catch (error) {
             console.error('Error loading rates:', error);
             document.getElementById('rates-container').innerHTML = 
-                '<div class="alert alert-danger">Error loading rates. Please try again later.</div>';
+                `<div class="alert alert-danger">Error loading rates: ${error.message}</div>`;
         }
     }
 
@@ -711,17 +713,18 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+    // Explicitly set APP_CONFIG if it's not set
+    if (!window.APP_CONFIG) {
+        window.APP_CONFIG = {
+            API_BASE_URL: 'https://api.arsrates.com'
+        };
+    }
 
-        console.log('Window APP_CONFIG:', window.APP_CONFIG);
-        console.log('Config and component scripts loaded');
-    
-        // Check if RatesContainer is defined
-        console.log('RatesContainer:', window.RatesContainer);
-
-        loadRates();
-        checkAuthState();
-        setInterval(checkAuthState, 60000);
-    });
+    console.log('Initial APP_CONFIG:', window.APP_CONFIG);
+    loadRates();
+    checkAuthState();
+    setInterval(checkAuthState, 60000);
+});
     </script>
 </body>
 </html>

@@ -176,10 +176,10 @@ const RatesContainer = () => {
         const fetchRates = async () => {
             try {
                 const [currentResponse, comparisonResponse] = await Promise.all([
-                    fetch('/static/data/current_rates.json'),
-                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`)
+                    fetch('/static/data/current_rates.json'), // This might need adjustment
+                    fetch('https://api.arsrates.com/api/rates/comparison')
                 ]);
-
+                
                 if (!currentResponse.ok || !comparisonResponse.ok) {
                     throw new Error('Failed to fetch rates');
                 }
