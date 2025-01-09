@@ -1,0 +1,8 @@
+/static/js/*.js
+  Content-Type: application/javascript
+
+/static/js/config.js
+  Content-Type: application/javascript
+
+/manifest.json
+  Content-Type: application/json

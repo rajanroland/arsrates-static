@@ -1,3 +1,4 @@
+//arsrates-static/static/js/ratesComponent.js
 const RateChangeDisplay = ({ change }) => {
     if (!change && change !== 0) return null;
     
