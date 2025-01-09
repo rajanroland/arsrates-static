@@ -177,7 +177,7 @@ const RatesContainer = () => {
             try {
                 const [currentResponse, comparisonResponse] = await Promise.all([
                     fetch('/static/data/current_rates.json'),
-                    fetch('/api/rates/comparison')
+                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`)
                 ]);
 
                 if (!currentResponse.ok || !comparisonResponse.ok) {
