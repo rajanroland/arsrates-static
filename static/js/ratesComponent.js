@@ -176,10 +176,10 @@ const RatesContainer = () => {
         const fetchRates = async () => {
             try {
                 const [currentResponse, comparisonResponse] = await Promise.all([
-                    fetch('/static/data/current_rates.json'), // This might need adjustment
-                    fetch('https://api.arsrates.com/api/rates/comparison')
+                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/current`),
+                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`)
                 ]);
-                
+
                 if (!currentResponse.ok || !comparisonResponse.ok) {
                     throw new Error('Failed to fetch rates');
                 }
@@ -190,12 +190,12 @@ const RatesContainer = () => {
                 setRates({
                     current: currentData.rates,
                     previous: comparisonData.previous,
-                    labels: currentData.labels
+                    labels: currentData.labels || {}
                 });
 
                 const lastUpdatedElement = document.getElementById('last-updated');
-                if (lastUpdatedElement && currentData.last_updated) {
-                    const date = new Date(currentData.last_updated);
+                if (lastUpdatedElement && currentData.timestamp) {
+                    const date = new Date(currentData.timestamp);
                     lastUpdatedElement.textContent = `Last Updated: ${date.toLocaleString()}`;
                 }
             } catch (error) {
