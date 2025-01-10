@@ -176,33 +176,35 @@ const RatesContainer = () => {
         const fetchRates = async () => {
             try {
                 const [currentResponse, comparisonResponse] = await Promise.all([
-                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/current`),
-                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`)
+                    fetch(`${window.APP_CONFIG.API_BASE_URL}/static/data/current_rates.json`, {
+                        mode: 'cors',
+                        credentials: 'omit',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }),
+                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`, {
+                        mode: 'cors',
+                        credentials: 'omit',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
                 ]);
-
+        
                 if (!currentResponse.ok || !comparisonResponse.ok) {
                     throw new Error('Failed to fetch rates');
                 }
-
+        
                 const currentData = await currentResponse.json();
                 const comparisonData = await comparisonResponse.json();
-
-                setRates({
-                    current: currentData.rates,
-                    previous: comparisonData.previous,
-                    labels: currentData.labels || {}
-                });
-
-                const lastUpdatedElement = document.getElementById('last-updated');
-                if (lastUpdatedElement && currentData.timestamp) {
-                    const date = new Date(currentData.timestamp);
-                    lastUpdatedElement.textContent = `Last Updated: ${date.toLocaleString()}`;
-                }
+        
+                // Rest of your code...
             } catch (error) {
                 console.error('Error fetching rates:', error);
             }
         };
-
+        
         fetchRates();
         const interval = setInterval(fetchRates, 60000);
         return () => clearInterval(interval);
