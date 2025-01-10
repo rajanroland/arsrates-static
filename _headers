@@ -1,8 +1,17 @@
-/static/js/*.js
+/*
+  Access-Control-Allow-Origin: *
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+/static/js/*
   Content-Type: application/javascript
+  Cache-Control: public, max-age=3600
 
-/static/js/config.js
-  Content-Type: application/javascript
+/static/images/*
+  Cache-Control: public, max-age=86400
 
 /manifest.json
   Content-Type: application/json
+  Cache-Control: public, max-age=3600
