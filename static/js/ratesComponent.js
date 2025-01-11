@@ -176,35 +176,43 @@ const RatesContainer = () => {
         const fetchRates = async () => {
             try {
                 const [currentResponse, comparisonResponse] = await Promise.all([
-                    fetch(`${window.APP_CONFIG.API_BASE_URL}/static/data/current_rates.json`, {
-                        mode: 'cors',
-                        credentials: 'omit',
+                    fetch('https://api.arsrates.com/api/rates/current', {
                         headers: {
                             'Accept': 'application/json'
                         }
                     }),
-                    fetch(`${window.APP_CONFIG.API_BASE_URL}/api/rates/comparison`, {
-                        mode: 'cors',
-                        credentials: 'omit',
+                    fetch('https://api.arsrates.com/api/rates/comparison', {
                         headers: {
                             'Accept': 'application/json'
                         }
                     })
                 ]);
-        
+
                 if (!currentResponse.ok || !comparisonResponse.ok) {
                     throw new Error('Failed to fetch rates');
                 }
-        
+
                 const currentData = await currentResponse.json();
                 const comparisonData = await comparisonResponse.json();
-        
-                // Rest of your code...
+
+                setRates({
+                    current: currentData.rates,
+                    previous: comparisonData.previous,
+                    labels: {}
+                });
+
+                const lastUpdatedElement = document.getElementById('last-updated');
+                if (lastUpdatedElement && currentData.timestamp) {
+                    const date = new Date(currentData.timestamp);
+                    lastUpdatedElement.textContent = `Last Updated: ${date.toLocaleString()}`;
+                }
             } catch (error) {
                 console.error('Error fetching rates:', error);
+                document.getElementById('rates-container').innerHTML = 
+                    `<div class="alert alert-danger">Error loading rates: ${error.message}</div>`;
             }
         };
-        
+
         fetchRates();
         const interval = setInterval(fetchRates, 60000);
         return () => clearInterval(interval);
